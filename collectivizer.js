@@ -6,12 +6,16 @@ var async = require('async');
 var _ = require('lodash');
 var callBackOnNextTick = require('conform-async').callBackOnNextTick;
 var getCandidatesPrecedingOf = require('./get-candidates-preceding-of');
+var getNounCandidates = require('./get-noun-candidates');
+var notFalsePositiveURL = require('./not-false-positive-URL');
 
 function createCollectivizer(opts) {
   var google;
+  var wordnikAPIKey;
 
   if (opts) {
     google = opts.google;
+    wordnikAPIKey = opts.wordnikAPIKey;
   }
 
   if (!google) {
@@ -20,7 +24,9 @@ function createCollectivizer(opts) {
 
   google.resultsPerPage = 10;
 
-  // var nounfinder = createNounfinder();
+  var nounfinder = createNounfinder({
+    wordnikAPIKey: wordnikAPIKey
+  });
 
   function collectivize(noun, done) {
     var forms = canonicalizer.getSingularAndPluralForms(noun);
@@ -59,19 +65,44 @@ function createCollectivizer(opts) {
 
     function pickCollectiveNoun(pickDone) {
       var result = results[resultIndex];
-      var candidates = {};
-      resultIndex += 1;
-      // nounfinder.getNounsFromText(result.title, done);
 
-      candidates.beforeOfs = getCandidatesPrecedingOf(result);
-      
-      if (candidates.beforeOfs.fromTitle.length > 0 ||
-        candidates.beforeOfs.fromDesc.length > 0) {
-
-        collectiveNoun = candidates;
+      if (!result) {
+        pickDone();
+        return;
       }
 
-      callBackOnNextTick(pickDone);
+      var candidates = {};
+      resultIndex += 1;
+      console.log(result.link);
+
+      if (!notFalsePositiveURL(result.link)) {
+        console.log('Filtering result from:', result.link);
+        pickDone();
+        return;
+      }
+
+      candidates.beforeOfs = getCandidatesPrecedingOf(result);
+
+      getNounCandidates(nounfinder, result, sumUp);
+
+      function sumUp(error, report) {
+        if (error) {
+          done(error);
+        }
+        else {
+          candidates.nouns = report;
+
+          if (candidates.beforeOfs.fromTitle.length > 0 ||
+            candidates.beforeOfs.fromDesc.length > 0 ||
+            candidates.nouns.fromTitle.length > 0 ||
+            candidates.nouns.fromDesc.length > 0) {
+
+            collectiveNoun = candidates;
+          }
+
+          pickDone();
+        }
+      }    
     }
   }
 

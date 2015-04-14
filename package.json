@@ -29,6 +29,7 @@
     "lodash": "^3.6.0",
     "nomnom": "^1.8.1",
     "nounfinder": "^1.1.1",
+    "queue-async": "^1.0.7",
     "wordnok": "^2.2.1"
   }
 }

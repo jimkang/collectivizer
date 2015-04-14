@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var notFalsePositiveGroupName = require('./not-false-positive-group-name');
 
 function getWordsPrecedingOf(phrase) {
   var words = phrase.toLowerCase().split(/[ ":.,;!?#]/);
@@ -13,18 +14,6 @@ function getWordsPrecedingOf(phrase) {
   }
 
   return _.uniq(preceders);
-}
-
-var beforeForFalsePositives = [
-  'group',
-  'list',
-  'sort',
-  'for',
-  'all'
-];
-
-function notFalsePositiveGroupName(word) {
-  return beforeForFalsePositives.indexOf(word) === -1;
 }
 
 function getCandidatesPrecedingOf(searchResult) {
