@@ -31,6 +31,7 @@ function createCollectivizer(opts) {
   function collectivize(noun, done) {
     var forms = canonicalizer.getSingularAndPluralForms(noun);
     var plural = forms[1];
+    var singular = forms[0];
     var collectiveNoun;
     var resultIndex = 0;
     var results;
@@ -43,41 +44,22 @@ function createCollectivizer(opts) {
       }
       else {
         results = searchResults;
-        async.until(
-          collectiveNounIsSet, pickCollectiveNoun, passBackCollectiveNoun
-        );
+        async.map(searchResults, roundUpCandidates, pickFromCandidates);
       }
     }
 
-    function passBackCollectiveNoun(error) {
-      debugger;
-      if (error) {
-        done(error);
-      }
-      else {
-        done(error, collectiveNoun);
-      }
+    function doesNotContainNoun(word) {
+      return word.indexOf(singular) === -1 && word.indexOf(plural) === -1;
     }
 
-    function collectiveNounIsSet() {
-      return collectiveNoun;
-    }
-
-    function pickCollectiveNoun(pickDone) {
-      var result = results[resultIndex];
-
-      if (!result) {
-        pickDone();
-        return;
-      }
-
+    function roundUpCandidates(result, done) {
       var candidates = {};
       resultIndex += 1;
       console.log(result.link);
 
       if (!notFalsePositiveURL(result.link)) {
         console.log('Filtering result from:', result.link);
-        pickDone();
+        done();
         return;
       }
 
@@ -91,21 +73,33 @@ function createCollectivizer(opts) {
         }
         else {
           candidates.nouns = report;
+          filterNounFromcandidates(candidates);
 
           if (candidates.beforeOfs.fromTitle.length > 0 ||
             candidates.beforeOfs.fromDesc.length > 0 ||
             candidates.nouns.fromTitle.length > 0 ||
             candidates.nouns.fromDesc.length > 0) {
-
-            collectiveNoun = candidates;
           }
 
-          pickDone();
+          done(null, candidates);
         }
-      }    
+      }
+    }
+
+    function filterNounFromcandidates(candidates) {
+      for (var key in candidates) {
+        candidates[key].fromTitle = candidates[key].fromTitle
+          .filter(doesNotContainNoun);
+        candidates[key].fromDesc = candidates[key].fromDesc
+          .filter(doesNotContainNoun);
+      }
+    }
+
+    function pickFromCandidates(error, candidates) {
+      done(error, candidates);
     }
   }
-
+  
   return exportMethods(collectivize);
 }
 

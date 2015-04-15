@@ -8,7 +8,12 @@ var beforeForFalsePositives = [
   'dictionary',
   'many',
   'table',
-  'anagram'
+  'anagram',
+  'type',
+  'types',
+  'varieties',
+  'variety',
+  'primarily' // ??
 ];
 
 function notFalsePositiveGroupName(word) {
