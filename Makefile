@@ -1,2 +1,2 @@
 test:
-	node tests/basictests.js
+	node tests/rate-candidates-tests.js

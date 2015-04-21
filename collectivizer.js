@@ -8,6 +8,7 @@ var callBackOnNextTick = require('conform-async').callBackOnNextTick;
 var getCandidatesPrecedingOf = require('./get-candidates-preceding-of');
 var getNounCandidates = require('./get-noun-candidates');
 var notFalsePositiveURL = require('./not-false-positive-URL');
+var rateCandidates = require('./rate-candidates.js');
 
 function createCollectivizer(opts) {
   var google;
@@ -44,7 +45,7 @@ function createCollectivizer(opts) {
       }
       else {
         results = searchResults;
-        async.map(searchResults, roundUpCandidates, pickFromCandidates);
+        async.map(searchResults, parseResults, pickCandidatesFromResults);
       }
     }
 
@@ -52,7 +53,12 @@ function createCollectivizer(opts) {
       return word.indexOf(singular) === -1 && word.indexOf(plural) === -1;
     }
 
-    function roundUpCandidates(result, done) {
+    function wordIsSingular(word) {
+      var singularWord = canonicalizer.getSingularAndPluralForms(word)[0];
+      return singularWord === word;
+    }
+
+    function parseResults(result, done) {
       var candidates = {};
       resultIndex += 1;
       console.log(result.link);
@@ -89,14 +95,20 @@ function createCollectivizer(opts) {
     function filterNounFromcandidates(candidates) {
       for (var key in candidates) {
         candidates[key].fromTitle = candidates[key].fromTitle
-          .filter(doesNotContainNoun);
+          .filter(doesNotContainNoun)
+          .filter(wordIsSingular);
         candidates[key].fromDesc = candidates[key].fromDesc
-          .filter(doesNotContainNoun);
+          .filter(doesNotContainNoun)
+          .filter(wordIsSingular);
       }
     }
 
-    function pickFromCandidates(error, candidates) {
-      done(error, candidates);
+    function pickCandidatesFromResults(error, results) {
+      console.log(JSON.stringify(results, null, '  '));
+      var scoresForCandidates = rateCandidates(results);
+      var sortedCandidatesForScores = _.invert(scoresForCandidates);
+
+      done(error, sortedCandidatesForScores);
     }
   }
   

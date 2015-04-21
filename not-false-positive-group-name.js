@@ -13,7 +13,13 @@ var beforeForFalsePositives = [
   'types',
   'varieties',
   'variety',
-  'primarily' // ??
+  'primarily', // ??
+  'world',
+  'catalog',
+  'manufacturer',
+  'made',
+  'science',
+  'history'  
 ];
 
 function notFalsePositiveGroupName(word) {
