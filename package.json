@@ -1,8 +1,8 @@
 {
   "name": "collectivizer",
   "version": "1.0.0",
-  "description": "Does some cool things.",
-  "main": "index.js",
+  "description": "Finds collective nouns for a given noun.",
+  "main": "collectivizer.js",
   "scripts": {
     "test": "make test"
   },
