@@ -19,7 +19,11 @@ var beforeForFalsePositives = [
   'manufacturer',
   'made',
   'science',
-  'history'  
+  'history',
+  'journal',
+  'future',
+  'defense',
+  'number'
 ];
 
 function notFalsePositiveGroupName(word) {

@@ -53,6 +53,12 @@ function createCollectivizer(opts) {
       return word.indexOf(singular) === -1 && word.indexOf(plural) === -1;
     }
 
+    // Filter out candidates that are contained in the subject. e.g Should 
+    // not use "event" as a collective noun for "media event".
+    function nounDoesNotContainCandidate(candidate) {
+      return singular.indexOf(candidate) === -1;
+    }
+
     function wordIsSingular(word) {
       var singularWord = canonicalizer.getSingularAndPluralForms(word)[0];
       return singularWord === word;
@@ -96,6 +102,7 @@ function createCollectivizer(opts) {
       for (var key in candidates) {
         candidates[key].fromTitle = candidates[key].fromTitle
           .filter(doesNotContainNoun)
+          .filter(nounDoesNotContainCandidate)
           .filter(wordIsSingular);
         candidates[key].fromDesc = candidates[key].fromDesc
           .filter(doesNotContainNoun)
