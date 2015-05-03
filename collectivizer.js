@@ -9,6 +9,7 @@ var getCandidatesPrecedingOf = require('./get-candidates-preceding-of');
 var getNounCandidates = require('./get-noun-candidates');
 var notFalsePositiveURL = require('./not-false-positive-URL');
 var rateCandidates = require('./rate-candidates.js');
+var createWordnok = require('wordnok').createWordnok;
 
 function createCollectivizer(opts) {
   var google;
@@ -23,10 +24,17 @@ function createCollectivizer(opts) {
     google = defaultGoogle;
   }
 
-  google.resultsPerPage = 10;
+  google.resultsPerPage = 20;
 
   var nounfinder = createNounfinder({
     wordnikAPIKey: wordnikAPIKey
+  });
+
+  var wordnok = createWordnok({
+    apiKey: wordnikAPIKey,
+    logger: {
+      log: function noOp() {}
+    }
   });
 
   function collectivize(noun, done) {
@@ -45,7 +53,7 @@ function createCollectivizer(opts) {
       }
       else {
         results = searchResults;
-        async.map(searchResults, parseResults, pickCandidatesFromResults);
+        async.map(searchResults, parseResults, scoreCandidates);
       }
     }
 
@@ -67,10 +75,10 @@ function createCollectivizer(opts) {
     function parseResults(result, done) {
       var candidates = {};
       resultIndex += 1;
-      console.log(result.link);
+      // console.log(result.link);
 
       if (!notFalsePositiveURL(result.link)) {
-        console.log('Filtering result from:', result.link);
+        // console.log('Filtering result from:', result.link);
         done();
         return;
       }
@@ -110,11 +118,13 @@ function createCollectivizer(opts) {
       }
     }
 
-    function pickCandidatesFromResults(error, results) {
-      console.log(JSON.stringify(results, null, '  '));
-      var scoresForCandidates = rateCandidates(results);
-      var sortedCandidatesForScores = _.invert(scoresForCandidates);
+    function scoreCandidates(error, results) {
+      // console.log(JSON.stringify(results, null, '  '));
+      rateCandidates(results, wordnok, pickCandidatesFromResults);
+    }
 
+    function pickCandidatesFromResults(error, scoresForCandidates) {
+      var sortedCandidatesForScores = _.invert(scoresForCandidates);
       done(error, sortedCandidatesForScores);
     }
   }

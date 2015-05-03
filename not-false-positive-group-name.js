@@ -23,7 +23,15 @@ var beforeForFalsePositives = [
   'journal',
   'future',
   'defense',
-  'number'
+  'number',
+  'are',
+  'category',
+  'definition',
+  'kind',
+  'some',
+  'instead',
+  'lot',
+  'mar'
 ];
 
 function notFalsePositiveGroupName(word) {
