@@ -15,7 +15,6 @@ var collectivizer = createCollectivizer({
 collectivizer.collectivize(cmdOpts[0], showResult);
 
 function showResult(error, result) {
-  debugger;
   if (error) {
     console.log(error);
   }
