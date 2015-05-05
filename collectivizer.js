@@ -7,7 +7,7 @@ var _ = require('lodash');
 var callBackOnNextTick = require('conform-async').callBackOnNextTick;
 var getCandidatesPrecedingOf = require('./get-candidates-preceding-of');
 var getNounCandidates = require('./get-noun-candidates');
-var notFalsePositiveURL = require('./not-false-positive-URL');
+var notFalsePositiveURL = require('./not-false-positive-url');
 var rateCandidates = require('./rate-candidates.js');
 var createWordnok = require('wordnok').createWordnok;
 
