@@ -114,6 +114,7 @@ function createCollectivizer(opts) {
           .filter(wordIsSingular);
         candidates[key].fromDesc = candidates[key].fromDesc
           .filter(doesNotContainNoun)
+          .filter(nounDoesNotContainCandidate)
           .filter(wordIsSingular);
       }
     }
