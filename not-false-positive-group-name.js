@@ -31,7 +31,9 @@ var beforeForFalsePositives = [
   'some',
   'instead',
   'lot',
-  'mar'
+  'mar',
+  'antonym',
+  'synonym'
 ];
 
 function notFalsePositiveGroupName(word) {
