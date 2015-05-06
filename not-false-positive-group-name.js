@@ -33,7 +33,16 @@ var beforeForFalsePositives = [
   'lot',
   'mar',
   'antonym',
-  'synonym'
+  'synonym',
+  'meaning',
+  'english',
+  'thesaurus',
+  'translation',
+  'pronounciation',
+  'noun',
+  'word',
+  'relevance',
+  'pronunciation'
 ];
 
 function notFalsePositiveGroupName(word) {

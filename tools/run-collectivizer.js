@@ -20,6 +20,5 @@ function showResult(error, result) {
   }
   else {
     console.log(JSON.stringify(result, null, '  '));
-    // "The collective noun for ____ is ____. A ____ of _____s."
   }
 }
