@@ -27,6 +27,7 @@ function createCandidateWordFilters(opts) {
 
   function applyAllFiltersToWords(words) {
     return words
+      .filter(isNaN)
       .filter(doesNotContainNoun)
       .filter(nounDoesNotContainCandidate)
       .filter(wordIsSingular);
