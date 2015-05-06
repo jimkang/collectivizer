@@ -1,5 +1,11 @@
 var exportMethods = require('export-methods');
 var canonicalizer = require('canonicalizer');
+var createIsCool = require('iscool');
+
+var iscool = createIsCool({
+  // logger: console,
+  tragedyHappenedRecently: false
+});
 
 function createCandidateWordFilters(opts) {
   var singular;
@@ -25,20 +31,25 @@ function createCandidateWordFilters(opts) {
     return singularWord === word;
   }
 
+  function isAtLeastTwoChars(word) {
+    return word.length > 1;
+  }
+
   function applyAllFiltersToWords(words) {
     return words
+      .filter(isAtLeastTwoChars)
       .filter(isNaN)
       .filter(doesNotContainNoun)
       .filter(nounDoesNotContainCandidate)
-      .filter(wordIsSingular);
+      .filter(wordIsSingular)
+      .filter(iscool);
   }
-
-// TODO: iscool, no numbers.
 
   return exportMethods(
     doesNotContainNoun,
     nounDoesNotContainCandidate,
     wordIsSingular,
+    iscool,
     applyAllFiltersToWords
   );
 }

@@ -26,6 +26,7 @@
     "conform-async": "^1.1.1",
     "export-methods": "^1.1.0",
     "google": "^1.1.0",
+    "iscool": "^1.0.16",
     "lodash": "^3.6.0",
     "nomnom": "^1.8.1",
     "queue-async": "^1.0.7",
