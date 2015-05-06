@@ -55,10 +55,10 @@ function scoreCandidates(results) {
       baseScore = 0;
     }
 
-    result.beforeOfs.fromTitle.forEach(
+    result.beforeOfNouns.fromTitle.forEach(
       _.curry(addScoreForCandidate)(beforeOfValue + titleValue + baseScore)
     );
-    result.beforeOfs.fromDesc.forEach(
+    result.beforeOfNouns.fromDesc.forEach(
       _.curry(addScoreForCandidate)(beforeOfValue + baseScore)
     );
     result.nouns.fromTitle.forEach(

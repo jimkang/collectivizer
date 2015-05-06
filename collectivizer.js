@@ -1,15 +1,16 @@
 var defaultGoogle = require('google');
 var canonicalizer = require('canonicalizer');
 var exportMethods = require('export-methods');
-var createNounfinder = require('nounfinder');
 var async = require('async');
 var _ = require('lodash');
 var callBackOnNextTick = require('conform-async').callBackOnNextTick;
-var getCandidatesPrecedingOf = require('./get-candidates-preceding-of');
+var categorizeByPrecedingOf = require('./categorize-by-preceding-of');
 var getNounCandidates = require('./get-noun-candidates');
 var notFalsePositiveURL = require('./not-false-positive-url');
 var rateCandidates = require('./rate-candidates.js');
 var createWordnok = require('wordnok').createWordnok;
+var queue = require('queue-async');
+var createCandidateWordFilters = require('./candidate-word-filters');
 
 function createCollectivizer(opts) {
   var google;
@@ -26,10 +27,6 @@ function createCollectivizer(opts) {
 
   google.resultsPerPage = 20;
 
-  var nounfinder = createNounfinder({
-    wordnikAPIKey: wordnikAPIKey
-  });
-
   var wordnok = createWordnok({
     apiKey: wordnikAPIKey,
     logger: {
@@ -44,7 +41,12 @@ function createCollectivizer(opts) {
     var collectiveNoun;
     var resultIndex = 0;
     var results;
-   
+
+    filters = createCandidateWordFilters({
+      singularFormOfRoot: singular,
+      pluralFormOfRoot: plural
+    });
+
     google('"of ' + plural + '"', combResults);
 
     function combResults(error, next, searchResults) {
@@ -55,21 +57,6 @@ function createCollectivizer(opts) {
         results = searchResults;
         async.map(searchResults, parseResults, scoreCandidates);
       }
-    }
-
-    function doesNotContainNoun(word) {
-      return word.indexOf(singular) === -1 && word.indexOf(plural) === -1;
-    }
-
-    // Filter out candidates that are contained in the subject. e.g Should 
-    // not use "event" as a collective noun for "media event".
-    function nounDoesNotContainCandidate(candidate) {
-      return singular.indexOf(candidate) === -1;
-    }
-
-    function wordIsSingular(word) {
-      var singularWord = canonicalizer.getSingularAndPluralForms(word)[0];
-      return singularWord === word;
     }
 
     function parseResults(result, done) {
@@ -83,44 +70,42 @@ function createCollectivizer(opts) {
         return;
       }
 
-      candidates.beforeOfs = getCandidatesPrecedingOf(result);
+      var q = queue();
 
-      getNounCandidates(nounfinder, result, sumUp);
+      var categorizedResult = categorizeByPrecedingOf(result);
+      q.defer(
+        getNounCandidates, wordnok, categorizedResult.wordsNotPrecedingOf
+      );
+      q.defer(getNounCandidates, wordnok, categorizedResult.wordsPrecedingOf);
 
-      function sumUp(error, report) {
+      q.await(sumUp);
+
+      function sumUp(error, reportNotPrecedingOf, reportPrecedingOf) {
         if (error) {
           done(error);
         }
         else {
-          candidates.nouns = report;
-          filterNounFromcandidates(candidates);
-
-          if (candidates.beforeOfs.fromTitle.length > 0 ||
-            candidates.beforeOfs.fromDesc.length > 0 ||
-            candidates.nouns.fromTitle.length > 0 ||
-            candidates.nouns.fromDesc.length > 0) {
-          }
-
+          candidates.nouns = reportNotPrecedingOf;
+          candidates.beforeOfNouns = reportPrecedingOf;
+          applyFiltersToCandidates(candidates);
           done(null, candidates);
         }
       }
     }
 
-    function filterNounFromcandidates(candidates) {
+    function applyFiltersToCandidates(candidates) {
       for (var key in candidates) {
-        candidates[key].fromTitle = candidates[key].fromTitle
-          .filter(doesNotContainNoun)
-          .filter(nounDoesNotContainCandidate)
-          .filter(wordIsSingular);
-        candidates[key].fromDesc = candidates[key].fromDesc
-          .filter(doesNotContainNoun)
-          .filter(nounDoesNotContainCandidate)
-          .filter(wordIsSingular);
+        candidates[key].fromTitle = filters.applyAllFiltersToWords(
+          candidates[key].fromTitle
+        );
+        candidates[key].fromDesc = filters.applyAllFiltersToWords(
+          candidates[key].fromDesc
+        );
       }
     }
 
     function scoreCandidates(error, results) {
-      // console.log(JSON.stringify(results, null, '  '));
+      // console.log('Scoring:',JSON.stringify(results, null, '  '));
       rateCandidates(results, wordnok, pickCandidatesFromResults);
     }
 

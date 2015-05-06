@@ -1,6 +1,6 @@
 module.exports = [
   {
-    "beforeOfs": {
+    "beforeOfNouns": {
       "fromTitle": [],
       "fromDesc": []
     },
@@ -21,7 +21,7 @@ module.exports = [
     }
   },
   {
-    "beforeOfs": {
+    "beforeOfNouns": {
       "fromTitle": [],
       "fromDesc": [
         "crew",
@@ -42,7 +42,7 @@ module.exports = [
     }
   },
   {
-    "beforeOfs": {
+    "beforeOfNouns": {
       "fromTitle": [],
       "fromDesc": [
         "member"
@@ -62,7 +62,7 @@ module.exports = [
     }
   },
   {
-    "beforeOfs": {
+    "beforeOfNouns": {
       "fromTitle": [],
       "fromDesc": []
     },
@@ -79,7 +79,7 @@ module.exports = [
     }
   },
   {
-    "beforeOfs": {
+    "beforeOfNouns": {
       "fromTitle": [
         "year"
       ],
@@ -107,7 +107,7 @@ module.exports = [
     }
   },
   {
-    "beforeOfs": {
+    "beforeOfNouns": {
       "fromTitle": [],
       "fromDesc": [
         "out"
@@ -127,7 +127,7 @@ module.exports = [
     }
   },
   {
-    "beforeOfs": {
+    "beforeOfNouns": {
       "fromTitle": [],
       "fromDesc": []
     },
@@ -144,7 +144,7 @@ module.exports = [
   },
   null,
   {
-    "beforeOfs": {
+    "beforeOfNouns": {
       "fromTitle": [
         "preparation"
       ],
@@ -167,7 +167,7 @@ module.exports = [
     }
   },
   {
-    "beforeOfs": {
+    "beforeOfNouns": {
       "fromTitle": [
         "crew"
       ],
