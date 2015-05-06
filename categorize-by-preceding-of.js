@@ -10,8 +10,10 @@ function categorizeWords(phrase) {
   if (!phrase) {
     return result;
   }
-  var words = phrase.toLowerCase().split(/[ ":.,;!?#\n]/);
+  var words = phrase.toLowerCase().split(/\W/);
   words = _.compact(words);
+  words = words.map(trimIt);
+
   var preceders = [];
 
   for (var i = 0; i < words.length; ++i) {
@@ -42,6 +44,10 @@ function categorizeByPrecedingOf(searchResult) {
       description: categorizedDesc.wordsPrecedingOf
     }
   };
+}
+
+function trimIt(s) {
+  return s.trim();
 }
 
 module.exports = categorizeByPrecedingOf;
