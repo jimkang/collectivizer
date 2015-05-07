@@ -2,7 +2,8 @@ var falsePositiveURLFragments = [
   'dictionary',
   'word',
   'facebook',
-  'anagram'
+  'anagram',
+  'tripadvisor'
 ];
 
 

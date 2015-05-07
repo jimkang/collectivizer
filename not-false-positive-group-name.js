@@ -35,6 +35,7 @@ var beforeForFalsePositives = [
   'antonym',
   'synonym',
   'meaning',
+  'etymology',
   'english',
   'thesaurus',
   'translation',
@@ -46,7 +47,8 @@ var beforeForFalsePositives = [
   'webster',
   'merriam',
   'edu',
-  'howtosay'
+  'howtosay',
+  'overview'
 ];
 
 function notFalsePositiveGroupName(word) {
