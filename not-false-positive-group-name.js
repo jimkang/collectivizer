@@ -42,7 +42,11 @@ var beforeForFalsePositives = [
   'noun',
   'word',
   'relevance',
-  'pronunciation'
+  'pronunciation',
+  'webster',
+  'merriam',
+  'edu',
+  'howtosay'
 ];
 
 function notFalsePositiveGroupName(word) {
