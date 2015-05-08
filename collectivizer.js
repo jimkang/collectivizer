@@ -11,6 +11,7 @@ var rateCandidates = require('./rate-candidates.js');
 var createWordnok = require('wordnok').createWordnok;
 var queue = require('queue-async');
 var createCandidateWordFilters = require('./candidate-word-filters');
+var searchResultIsNotFromADictionary = require('./search-result-is-not-from-a-dictionary');
 
 function createCollectivizer(opts) {
   var google;
@@ -64,7 +65,9 @@ function createCollectivizer(opts) {
       resultIndex += 1;
       // console.log(result.link);
 
-      if (!notFalsePositiveURL(result.link)) {
+      if (!notFalsePositiveURL(result.link) ||
+        !searchResultIsNotFromADictionary(result)) {
+
         // console.log('Filtering result from:', result.link);
         done();
         return;
