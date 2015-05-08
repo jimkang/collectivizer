@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var getModifierForWordFreq = require('./get-modifier-for-word-freq');
 
 var titleValue = 2;
 var beforeOfValue = 8;
@@ -75,8 +76,12 @@ function scoreCandidates(results) {
       existingScore = scoresForCandidates[candidate];
     }
 
-    var score = baseScore + getModifierForWordFreq(candidate);
-    scoresForCandidates[candidate] = existingScore + score;
+    var score = baseScore + getModifierForWordFreq(
+      frequenciesForWords, candidate);
+
+    if (score > existingScore) {
+      scoresForCandidates[candidate] = score;
+    }
   }
 
   return scoresForCandidates;
@@ -88,21 +93,6 @@ function getWordsFromReports(reports, reportProperty) {
     .flatten()
     .compact()
     .value();
-}
-
-function getModifierForWordFreq(word) {
-  var modifier = 20;
-  var freq = frequenciesForWords[word];
-  if (freq > 0) {
-    modifier = ~~(6 - Math.log(freq));
-    if (modifier < 0) {
-      modifier = 0;
-    }
-    else {
-      modifier = ~~(modifier * 20/6)
-    }
-  }
-  return modifier;
 }
 
 module.exports = rateCandidates;

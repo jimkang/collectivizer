@@ -37,7 +37,8 @@ function getStrictNounsFromList(wordnok, words, doneGettingNouns) {
     function isExclusivelyANoun(word, i) {
       if (partsOfSpeech.length > i) {
         var correspondingPartsOfSpeech = partsOfSpeech[i];
-        return correspondingPartsOfSpeech.every(posIsANoun);
+        return correspondingPartsOfSpeech.length > 0 &&
+          correspondingPartsOfSpeech.every(posIsANoun);
       }
       return false;
     }
