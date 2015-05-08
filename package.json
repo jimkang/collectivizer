@@ -1,6 +1,6 @@
 {
   "name": "collectivizer",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Finds collective nouns for a given noun.",
   "main": "collectivizer.js",
   "scripts": {

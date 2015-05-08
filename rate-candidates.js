@@ -2,7 +2,7 @@ var _ = require('lodash');
 var getModifierForWordFreq = require('./get-modifier-for-word-freq');
 
 var titleValue = 2;
-var beforeOfValue = 8;
+var beforeOfValue = 15;
 var baseValue = 1;
 var firstResultValue = 5;
 
@@ -80,7 +80,10 @@ function scoreCandidates(results) {
       frequenciesForWords, candidate);
 
     if (score > existingScore) {
-      scoresForCandidates[candidate] = score;
+      scoresForCandidates[candidate] = score + ~~(existingScore/4);
+    }
+    else {
+      scoresForCandidates[candidate] = existingScore + ~~(score/4);
     }
   }
 

@@ -1,4 +1,4 @@
-var rareWordModifierBase = 20;
+var rareWordModifierBase = 12;
 
 function getModifierForWordFreq(frequenciesForWords, word) {
   var modifier;
