@@ -48,7 +48,8 @@ var beforeForFalsePositives = [
   'merriam',
   'edu',
   'howtosay',
-  'overview'
+  'overview',
+  'spelling'
 ];
 
 function notFalsePositiveGroupName(word) {
